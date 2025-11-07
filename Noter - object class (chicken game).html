@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        //9B - øvelse
+
+        class animal{
+            constructor(alive = true, hasWon = false) {
+                this.alive = alive;
+                this.hasWon = hasWon;
+            }
+
+            die(deathReason){
+                this.alive = false;
+                return alert(deathReason)
+                //alert(this.name + " has died from hunger :(")
+            }
+
+            win() {
+                this.hasWon = true
+                return alert("It has been 30 days...\nCongratulations! You have won the game! :)")
+            }
+        }
+        
+        class chicken extends animal{
+            constructor(name, weight){
+                super();
+                this.name = name;
+                this.weight = weight;
+            }
+
+            feed(number) {
+                this.weight += Number(number); // vægten redefineres.
+                if(this.weight <= 10) {
+                    alert(this.name + " has been fed " + number + "kg of food and now weights " + this.weight + "kg.");
+                } else {
+                    this.die(this.name + " has gotten too fat and exploted :(")
+                }
+            }
+
+            walkAbout(days){
+                //if(!this.alive) {
+                //    alert(this.name + " is dead and can therefore not walk.")
+                //};
+                for(let i = 1; i <= Number(days); i++) {
+                    this.weight--;
+                    daysPassed ++;
+                    if(daysPassed === 30) {
+                        this.win();
+                        break; // Stopper løkken, hvis spiller vinder.
+                    } else if(this.weight > 0 && daysPassed === 1){
+                        alert(this.name + " has walked for 1 day and weights " + this.weight + "kg.");
+                    } else if(this.weight > 0 && daysPassed > 1) {
+                        alert(this.name + " has walked for " + daysPassed + " days and weights " + this.weight + "kg.");
+                    } else {
+                        this.die(this.name + " has died from hunger :(");
+                        break; // Stopper løkken, hvis kyllingen dør.
+                    }
+                }
+            }
+        }
+
+        let daysPassed = 0;
+        let chicken1 = new chicken("Frank", 5);
+        let chicken2 = new chicken("Frankita", 5);
+        
+
+        alert("Welcome to the game of chickens!\n\nIn this game you have to keep your chosen chicken alive!")
+        alert("These are the rules:\n\n1.   Your chicken dies of hunger if its weight gets below 1kg.\n2.   If your chicken weights more than 10kg it explodes and dies.\n3.  Your chicken loses 1kg per day that it walks around.")
+        alert("If your chicken survives a total of 30 days you win the game!\n\nLet's get started! :)")
+
+        // Vælg kylling
+
+        let chosenName = prompt("First you have to create your chicken!\n\nWhat would you like to call it?");
+        while(chosenName === ""){
+            chosenName = prompt("Please enter the name of your chicken");
+        }
+
+        let chicken3 = new chicken(chosenName, 5);
+
+        let chickensLeft = [chicken1, chicken2, chicken3];
+
+        let chosenChicken = "";
+
+        while(chickensLeft.length !== 0 && !chosenChicken.hasWon) {
+
+            let daysPassed = 0;
+
+            if(chickensLeft.length === 3) {
+                chosenChicken = chicken3;
+                alert("Good choise!")
+
+            } else if(chickensLeft.length === 2) {
+                chosenChicken = prompt("You have killed your own chicken... You can have one of ours.\nThese are our chickens:\n- " + chickensLeft[0].name + "\n- " + chickensLeft[1].name + "\n\nPlease name the chicken of your choise")
+        
+                while(chosenChicken.trim().toLowerCase() !== chicken1.name.trim().toLowerCase() 
+                && chosenChicken.trim().toLowerCase() !== chicken2.name.trim().toLowerCase()) {
+                    chosenChicken = prompt("That was not the name of one of our chickens. Please try again!\n\nChoose between " + chickensLeft[0].name + " and " + chickensLeft[1].name);
+                }
+
+                if(chosenChicken.trim().toLowerCase() === "frank") {
+                    chosenChicken = chicken1;
+                    alert("Good choise!")
+                } else {
+                    chosenChicken = chicken2;
+                    alert("Good choise!")
+                }
+
+            } else if(chickensLeft.length === 1) {
+                chosenChicken = chickensLeft[0];
+                alert("The only chicken left is " + chosenChicken.name);
+            }
+
+            
+        
+            // Fodr kyllig
+
+            while(chosenChicken.alive && !chosenChicken.hasWon) {
+
+                
+                let mad = prompt("The current weight is " + chosenChicken.weight + "kg.\n\nHow many kilos of food would you like to feed " + chosenChicken.name + "?");
+               
+                while(isNaN(Number(mad)) || mad === "" || mad < 0) {
+                    mad = prompt("That was not a valid number.\nPlease put in the number of kilos you would like to feed " + chosenChicken.name);
+                }
+
+                chosenChicken.feed(mad);
+
+
+                // Få kylling til at gå
+
+                if(chosenChicken.alive) {
+                    let dage = prompt("Please enter the number of days that " + chosenChicken.name + " should walk around.");
+                    while(isNaN(Number(dage)) || dage === "" || dage < 0) {
+                        dage = prompt("That was not a valid number.\nPlease put in the number of days that " + chosenChicken.name + " should walk around");
+                    }
+
+                    chosenChicken.walkAbout(dage);
+                }
+            }
+
+
+            //Fjerner den døde kylling fra listen af kyllinger, der kan vælges.
+
+            for(let i = 0; i < chickensLeft.length; i++) {
+                if(chickensLeft[i] === chosenChicken) {
+                    chickensLeft.splice(i,1);
+                }
+            }
+
+
+            if(!chosenChicken.alive && chickensLeft.length !== 0) {
+                alert("Please choose a new chicken");
+            }
+        }
+
+        if(!chosenChicken.hasWon) {
+            alert("GAME OVER\n\nYou have killed all the chickens...\n\nReload the page if you would like to play again.")
+        }
+        
+
+
+    </script>
+</body>
+</html>
